@@ -57,14 +57,14 @@ workflows:
     jobs:
       - update
       - lint:
-        - requires:
-          - update
+          requires:
+            - update
       - unit:
-        - requires:
-          - update
+          requires:
+            - update
       - buildProd:
-        - requires:
-          - update
+          requires:
+            - update
       # - deployGhPages:
       #   - requires:
       #     - lint
