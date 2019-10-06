@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "test": "npm run test:unit",
+    "deploy": "gh-pages --message \"[skip ci] Updates\" --dist dist"
   },
   "dependencies": {
     "core-js": "^2.6.5",
@@ -29,6 +31,7 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "gh-pages": "^2.1.1",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
     "ts-jest": "^23.0.0",
