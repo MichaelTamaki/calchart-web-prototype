@@ -4,7 +4,7 @@
 #
 version: 2.1
 jobs:
-  update:
+  test:
     docker:
       - image: circleci/node:10.16.3
 
@@ -24,27 +24,11 @@ jobs:
             - node_modules
           key: dependency-cache-{{ checksum "package-lock.json" }}
 
-  lint:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-{{ checksum "package-lock.json" }}
       - run: npm run lint
 
-  unit:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-{{ checksum "package-lock.json" }}
       - run: npm run test:unit
 
-  buildProd:
+  deployGhPages:
     docker:
       - image: circleci/node:10.16.3
     steps:
@@ -58,21 +42,12 @@ workflows:
   version: 2.1
   build_accept_deploy:
     jobs:
-      - update
-      - lint:
+      - test
+      - deployGhPages:
           requires:
-            - update
-      - unit:
-          requires:
-            - update
-      - buildProd:
-          requires:
-            - update
-      # - deployGhPages:
-      #   - requires:
-      #     - lint
-      #     - unit
-      #     - buildProd
-      #   - branches:
-      #     - only:
-      #       - master
+            - test
+          filters:
+            branches:
+              only: master
+
+
