@@ -1,0 +1,75 @@
+# Javascript Node CircleCI 2.1 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2.1
+jobs:
+  update:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10.16.3
+
+    steps:
+      - checkout
+
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+
+  lint:
+    steps:
+      - run:
+        name: lint
+        command: npm run lint
+
+  unit:
+    steps:
+      - run:
+        name: test:unit
+        command: npm run test:unit
+
+  buildProd:
+    steps:
+      - run:
+        name: build to dist/
+        command: npm run build
+
+  deployGhPages:
+    steps:
+      - run:
+
+
+workflows:
+  version: 2.1
+  build_accept_deploy:
+    jobs:
+      - update
+      - lint:
+        - requires:
+          - update
+      - unit:
+        - requires:
+          - update
+      - buildProd:
+        - requires:
+          - update
+      - deployGhPages:
+        - requires:
+          - lint
+          - unit
+          - buildProd
+        - branches:
+          - only:
+            - master
