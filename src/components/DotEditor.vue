@@ -1,33 +1,34 @@
 <template>
   <div>
     <div>
-      <h2>Dot Editor</h2>
-      <p>Click a row to select a dot.</p>
+      <h2>Selected Dot Editor</h2>
+      <p>Selected dots in the Grapher show up here.</p>
       <table>
         <thead>
           <tr>
-            <th>X / Y</th>
+            <th>From X/Y</th>
+            <th>To X/Y</th>
             <th>Dot Type</th>
             <th>Flow</th>
-            <th>Flow is valid</th>
           </tr>
         </thead>
         <tbody>
           <tr
-          v-for="(dot, index) in dots"
-          v-bind:class="{'selected': isSelected(dot)}"
-          v-on:click="setSelectedDots([dot])"
+          v-for="(dotPair, index) in dotsPairs"
           v-bind:key="index"
           >
             <td>
-              <input v-model.number="dot.coord[0]" type="number" />
-              <input v-model.number="dot.coord[1]" type="number" />
+              <input v-model.number="dotPair[0].coord[0]" v-on:change="generateFlowHelper(index)" type="number" />
+              <input v-model.number="dotPair[0].coord[1]" v-on:change="generateFlowHelper(index)" type="number" />
             </td>
             <td>
-              <input v-model.number="dot.dotType" type="number" />
+              <input v-if="dotPair[1]" v-model.number="dotPair[1].coord[0]" v-on:change="generateFlowHelper(index)" type="number" />
+              <input v-if="dotPair[1]" v-model.number="dotPair[1].coord[1]" v-on:change="generateFlowHelper(index)" type="number" />
             </td>
-            <td>{{dot.flow}}</td>
-            <td>{{dot.flowIsValid()}}</td>
+            <td>
+              <input v-model.number="dotPair[0].dotType" v-on:change="generateFlowHelper(index)" type="number" min="0" v-bind:max="dotTypesLength-1" />
+            </td>
+            <td>{{dotPair[0].flow}}</td>
           </tr>
         </tbody>
       </table>
@@ -39,20 +40,26 @@
 import { Component, Vue } from 'vue-property-decorator'
 import Stuntsheet from '@/models/Stuntsheet'
 import Dot from '@/models/Dot'
+import generateFlow from '@/logic/GenerateFlow'
 
 @Component
 export default class DotEditor extends Vue {
-  get dots (): Dot[] {
-    let stuntsheet: Stuntsheet = this.$store.state.selectedSS
-    return stuntsheet.dots
+  get dotsPairs (): [Dot, Dot|null][] {
+    let fromDots: Dot[] = this.$store.getters.getSelectedFromDots
+    let toDots: Array<Dot|null> = this.$store.getters.getSelectedToDots
+    return fromDots.map((dot: Dot, index: number) => [dot, toDots.length > index ? toDots[index] : null])
   }
 
-  isSelected (dot: Dot) {
-    return this.$store.state.selectedDots.includes(dot)
+  get dotTypesLength (): number {
+    return this.$store.getters.getSelectedSS.dotTypes.length
   }
 
-  setSelectedDots (dots: Dot[]) {
-    this.$store.commit('setSelectedDots', dots)
+  generateFlowHelper (index: number) {
+    generateFlow(
+      this.$store.state.show,
+      this.$store.state.selectedSSIndex,
+      [this.$store.getters.getSelectedFromDots[index]]
+    )
   }
 }
 </script>
@@ -65,9 +72,5 @@ table {
 
 th {
   border: 1px solid gray;
-}
-
-.selected {
-  background: aqua;
 }
 </style>

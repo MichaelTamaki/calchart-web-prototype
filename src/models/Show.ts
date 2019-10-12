@@ -30,26 +30,13 @@ export class Show {
    * and work on the flows.
    */
   unsetNextDots (stuntsheetIndex: number): void {
-    this.stuntSheets[stuntsheetIndex].dots.forEach(function (dot: Dot) {
-      dot.nextDot = null
-      dot.flow = [dot.coord]
+    this.stuntSheets[stuntsheetIndex].dots.forEach(function (dot: Dot, index: number) {
+      if (dot.hasNextDot) {
+        dot.flow = [dot.coord]
+        dot.hasNextDot = false
+      }
     })
   };
-
-  /*
-   * Helper function that generates a new list of Dots
-   * in the next Stuntsheet with each position corresponding
-   * to the last position of a flow.
-   * Helpful if author wants to focus on setting Dots'
-   * flows rather than worry about the next coordinates.
-   */
-  attachToNextSS (stuntsheetIndex: number): void {
-    let nextDots: Dot[] = []
-    this.stuntSheets[stuntsheetIndex].dots.forEach(function (dot) {
-      nextDots.push(new Dot(dot, undefined))
-    })
-    this.stuntSheets[stuntsheetIndex + 1].dots = nextDots
-  }
 };
 
 /*

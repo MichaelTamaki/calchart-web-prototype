@@ -5,8 +5,7 @@ test('initializing Dot with no previous Dot', () => {
   expect(dot.dotType).toBe(0)
   expect(dot.coord).toEqual([1.5, 2])
   expect(dot.flow).toEqual([[1.5, 2]])
-  expect(dot.nextDot).toBeNull()
-  expect(dot.flowIsValid()).toBe(true)
+  expect(dot.hasNextDot).toBe(false)
 })
 
 describe('initializing Dot with previous Dot', () => {
@@ -26,22 +25,7 @@ describe('initializing Dot with previous Dot', () => {
     expect(secondSSDot.dotType).toBe(0)
     expect(secondSSDot.coord).toEqual([firstSSDot.coord[0] + 1.0, firstSSDot.coord[1] + 1.0])
     expect(secondSSDot.flow).toEqual([secondSSDot.coord])
-    expect(secondSSDot.nextDot).toBeNull()
-    expect(secondSSDot.flowIsValid()).toBe(true)
-    expect(firstSSDot.nextDot).toBe(secondSSDot)
+    expect(secondSSDot.hasNextDot).toBe(false)
+    expect(firstSSDot.hasNextDot).toBe(true)
   })
-})
-
-test('Dot validates if flow is correct', () => {
-  let firstSSDot = new Dot(undefined, [1, 1])
-  let secondSSDot = new Dot(firstSSDot, undefined)
-  expect(firstSSDot.flowIsValid()).toBe(true)
-  secondSSDot.coord = [2, 2]
-  expect(firstSSDot.flowIsValid()).toBe(false)
-  firstSSDot.flow = [[1, 1], [2, 2]]
-  expect(firstSSDot.flowIsValid()).toBe(true)
-  firstSSDot.nextDot = null
-  expect(firstSSDot.flowIsValid()).toBe(false)
-  firstSSDot.flow = [[1, 1]]
-  expect(firstSSDot.flowIsValid()).toBe(true)
 })

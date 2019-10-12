@@ -4,6 +4,8 @@
     <ControlMenu />
     <h2>Grapher</h2>
     <p>Click a dot to select it.</p>
+    <p>Black dots reprsent a marcher at the current beat.</p>
+    <p>Red dots represent the next stuntsheet's position.</p>
     <div
     class="grapher-container"
     v-bind:style="{fontSize: zoomLevel + '%'}"

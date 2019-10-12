@@ -1,6 +1,7 @@
 <template>
   <div id="grapher">
-    <GrapherDot v-for="(dot, index) in dots" v-bind:dot="dot" v-bind:key="index" />
+    <GrapherDot v-for="(dot, index) in toDots" v-bind:dot="dot" v-bind:key="-index - 1" v-bind:index="index" isTo />
+    <GrapherDot v-for="(dot, index) in fromDots" v-bind:dot="dot" v-bind:key="index" v-bind:index="index" />
   </div>
 </template>
 
@@ -17,9 +18,12 @@ import Stuntsheet from '@/models/Stuntsheet'
   }
 })
 export default class Grapher extends Vue {
-  get dots () {
-    let stuntsheet: Stuntsheet = this.$store.state.selectedSS
-    return stuntsheet.dots
+  get fromDots (): Dot[] {
+    return this.$store.getters.getSelectedSSDots
+  }
+
+  get toDots (): Array<Dot|null> {
+    return this.$store.getters.getSelectedSSNextDots
   }
 }
 </script>

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { Show, ShowLabels } from '@/models/Show'
 import Dot from '@/models/Dot'
+import Stuntsheet from '@/models/Stuntsheet'
 
 Vue.use(Vuex)
 
@@ -9,21 +10,19 @@ const defaultShow = new Show('Example Show', 10, ShowLabels[0])
 
 export default new Vuex.Store({
   state: {
-    selectedDots: [defaultShow.stuntSheets[0].dots[0]],
-    selectedSS: defaultShow.stuntSheets[0],
-    selectedDotType: 0,
+    selectedDotsIndex: [0],
+    selectedSSIndex: 0,
     selectedBeat: 0,
     show: defaultShow,
     zoomLevel: 100
   },
   mutations: {
-    setSelectedDots (state, dots: Dot[]) {
-      state.selectedDots = dots
+    setSelectedDotsIndex (state, dots: number[]) {
+      state.selectedDotsIndex = dots
     },
-    setSelectedSS (state, index: number) {
-      state.selectedSS = state.show.stuntSheets[index]
-      state.selectedDots = [state.selectedSS.dots[0]]
-      state.selectedDotType = 0
+    setSelectedSSIndex (state, index: number) {
+      state.selectedSSIndex = index
+      state.selectedDotsIndex = []
       state.selectedBeat = 0
     },
     setZoomLevel (state, level: number) {
@@ -34,5 +33,35 @@ export default new Vuex.Store({
     }
   },
   actions: {
+  },
+  getters: {
+    getSelectedFromDots: state => {
+      return state.show.stuntSheets[state.selectedSSIndex].dots
+        .filter((dot: Dot, index: number) => state.selectedDotsIndex.includes(index))
+    },
+    getSelectedToDots: state => {
+      console.log(state.selectedSSIndex + 1)
+      console.log(state.show.stuntSheets.length)
+      if (state.show.stuntSheets.length <= state.selectedSSIndex + 1) {
+        return []
+      }
+      return state.show.stuntSheets[state.selectedSSIndex + 1].dots
+        .filter((dot: Dot, index: number) => state.selectedDotsIndex.includes(index))
+    },
+    getSelectedSS: state => {
+      return state.show.stuntSheets[state.selectedSSIndex]
+    },
+    getSelectedSSDots: state => {
+      return state.show.stuntSheets[state.selectedSSIndex].dots
+    },
+    getSelectedSSNextDots: state => {
+      if (state.show.stuntSheets.length <= state.selectedSSIndex + 1) {
+        return []
+      }
+      return state.show.stuntSheets[state.selectedSSIndex + 1].dots
+        .map((dot: Dot, index: number) => {
+          return (state.show.stuntSheets[state.selectedSSIndex].dots[index].hasNextDot) ? dot : null
+        })
+    }
   }
 })

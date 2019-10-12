@@ -12,8 +12,8 @@
       </thead>
       <tbody>
         <tr
-        v-bind:class="{'selected': index === selectedSSIndex}"
         v-for="(stuntsheet, index) in stuntSheets"
+        v-bind:class="{'selected': index === selectedSSIndex}"
         v-bind:key="index"
         >
           <td>{{index}}</td>
@@ -53,13 +53,11 @@ export default class SSEditor extends Vue {
   }
 
   get selectedSSIndex () {
-    return this.$store.state.show.stuntSheets.indexOf(
-      this.$store.state.selectedSS
-    )
+    return this.$store.state.selectedSSIndex
   }
 
   selectSS (index: number) {
-    this.$store.commit('setSelectedSS', index)
+    this.$store.commit('setSelectedSSIndex', index)
   }
 
   removeSS (index: number) {
