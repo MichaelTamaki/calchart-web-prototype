@@ -35,19 +35,20 @@ const generateFlow = function (show: Show, stuntsheetIndex: number, dots: Dot[])
   var toSS = show.stuntSheets[stuntsheetIndex + 1]
 
   dots.forEach(function (fromDot: Dot) {
-    if (fromDot.nextDot === null) return
+    if (!fromDot.hasNextDot) return
 
-    var toDot: Dot = fromDot.nextDot
+    let fromIndex = fromSS.dots.indexOf(fromDot)
+    var toDot: Dot = toSS.dots[fromIndex]
     var continuities: Continuity[] = fromSS.dotTypes[fromDot.dotType]
     var flow: number[][] = [fromDot.coord]
 
-    continuities.forEach(function (continuity: Continuity, index: number) {
+    continuities.forEach(function (continuity: Continuity, toIndex: number) {
       if (flow[flow.length - 1] === toDot.coord) return
 
       if (continuity.marchType === MarchTypes.MTHS) {
         // MTHS
         if (continuity.beats === null) return
-        let i = index === 0 ? 1 : 0
+        let i = toIndex === 0 ? 1 : 0
         for (; i < continuity.beats; i++) {
           flow.push(flow[flow.length - 1])
         }

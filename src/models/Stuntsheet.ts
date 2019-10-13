@@ -6,9 +6,9 @@ import Dot from './Dot'
  * generate each dots' flows to their nextDot.
  */
 class Stuntsheet {
-  beats: number;
-  dotTypes: Continuity[][];
-  dots: Dot[];
+  beats: number; // Number of beats
+  dotTypes: Continuity[][]; // Dot Types represent the list of continuities a dot does
+  dots: Dot[]; // The index of each dot is their unique identifier
 
   constructor (
     beats: number|undefined,

@@ -17,7 +17,6 @@ describe('GenerateFlow', () => {
     generateFlow(show, 0, [firstSSDot])
     expect(firstSSDot.flow).toHaveLength(1)
     expect(firstSSDot.flow).toEqual([firstSSDot.coord])
-    expect(firstSSDot.flowIsValid()).toBe(true)
   })
 
   describe('FHS', () => {
@@ -45,7 +44,6 @@ describe('GenerateFlow', () => {
         [firstSSDot.coord[0] + 1, firstSSDot.coord[1] + 2],
         secondSSDot.coord
       ])
-      expect(firstSSDot.flowIsValid()).toBe(true)
     })
 
     test('FHS NS/EW', () => {
@@ -63,7 +61,6 @@ describe('GenerateFlow', () => {
         [firstSSDot.coord[0] + 2, firstSSDot.coord[1] + 1],
         secondSSDot.coord
       ])
-      expect(firstSSDot.flowIsValid()).toBe(true)
     })
   })
 
@@ -100,7 +97,6 @@ describe('GenerateFlow', () => {
         [firstSSDot.coord[0] + 1, firstSSDot.coord[1] + 2],
         secondSSDot.coord
       ])
-      expect(firstSSDot.flowIsValid()).toBe(true)
     })
 
     test('another MTHS', () => {
@@ -119,7 +115,6 @@ describe('GenerateFlow', () => {
         firstSSDot.coord,
         firstSSDot.coord
       ])
-      expect(firstSSDot.flowIsValid()).toBe(false)
     })
   })
 })

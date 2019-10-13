@@ -2,9 +2,9 @@
   <div>
     <h2>Dot Type Editor</h2>
     <p>After configuring continuities, click "Generate Flows."</p>
-    <button v-on:click="addDotType">Add Dot Type</button>
     <div v-for="(dotType, dotTypeIndex) in dotTypes" v-bind:key="dotTypeIndex">
       <h3>Dot Type: {{dotTypeIndex}}</h3>
+      <button v-on:click="removeDotType(dotTypeIndex)">Remove Dot Type</button>
       <table>
         <thead>
           <tr>
@@ -22,7 +22,7 @@
           >
             <td>{{continuity.toString()}}</td>
             <td>
-              <select v-model="continuity.marchType">
+              <select v-model="continuity.marchType" v-on:change="generateFlowHelper(dotTypeIndex)">
                 <option
                 v-for="(marchType, marchTypeIndex) in marchTypes"
                 v-bind:key="marchTypeIndex"
@@ -32,7 +32,7 @@
               </select>
             </td>
             <td>
-              <select v-model="continuity.direction">
+              <select v-model="continuity.direction" v-on:change="generateFlowHelper(dotTypeIndex)">
                 <option
                 v-for="(direction, directionIndex) in directions"
                 v-bind:key="directionIndex"
@@ -59,9 +59,8 @@
           </tr>
         </tbody>
       </table>
-      <button v-on:click="generateFlow(dotTypeIndex)">Generate Flows</button>
-      <button v-on:click="removeDotType(dotTypeIndex)">Remove Dot Type</button>
     </div>
+    <button v-on:click="addDotType">Add Dot Type</button>
   </div>
 </template>
 
@@ -74,7 +73,7 @@ import generateFlow from '@/logic/GenerateFlow'
 @Component
 export default class BottomMenu extends Vue {
   get dotTypes (): Continuity[][] {
-    return this.$store.state.selectedSS.dotTypes
+    return this.$store.getters.getSelectedSS.dotTypes
   }
 
   get marchTypes () {
@@ -85,35 +84,33 @@ export default class BottomMenu extends Vue {
     return Directions
   }
 
-  addContinuity (dotTypeIndex: number) {
-    this.$store.state.selectedSS.dotTypes[dotTypeIndex]
-      .push(new Continuity(undefined, undefined, undefined))
-  }
-
-  removeContinuity (dotTypeIndex: number, continuityIndex: number) {
-    this.$store.state.selectedSS.dotTypes[dotTypeIndex]
-      .splice(continuityIndex, 1)
-  }
-
-  generateFlow (dotTypeIndex: number) {
-    let selectedSSIndex: number = this.$store.state.show.stuntSheets.indexOf(
-      this.$store.state.selectedSS
-    )
-    let dotTypeDots: Dot[] = this.$store.state.selectedSS.dots
+  generateFlowHelper (dotTypeIndex: number) {
+    let dotTypeDots: Dot[] = this.$store.getters.getSelectedSS.dots
       .filter((dot: Dot) => {
         return dotTypeIndex === dot.dotType
       })
-    generateFlow(this.$store.state.show, selectedSSIndex, dotTypeDots)
+    generateFlow(this.$store.state.show, this.$store.state.selectedSSIndex, dotTypeDots)
+  }
+
+  addContinuity (dotTypeIndex: number) {
+    this.$store.getters.getSelectedSS.dotTypes[dotTypeIndex]
+      .push(new Continuity(undefined, undefined, undefined))
+    this.generateFlowHelper(dotTypeIndex)
+  }
+
+  removeContinuity (dotTypeIndex: number, continuityIndex: number) {
+    this.$store.getters.getSelectedSS.dotTypes[dotTypeIndex]
+      .splice(continuityIndex, 1)
+    this.generateFlowHelper(dotTypeIndex)
   }
 
   addDotType () {
-    this.$store.state.selectedSS.dotTypes
+    this.$store.getters.getSelectedSS.dotTypes
       .push([new Continuity(undefined, undefined, undefined)])
   }
 
   removeDotType (dotTypeIndex: number) {
-    this.$store.state.selectedSS.dotTypes
-      .splice(dotTypeIndex, 1)
+    this.$store.getters.getSelectedSS.dotTypes.splice(dotTypeIndex, 1)
   }
 }
 </script>

@@ -4,11 +4,11 @@
     <h2>Control Menu</h2>
     <div>
       <label for="zoom-level">Zoom Level</label>
-      <input id="zoom-level" v-model.number="zoomLevel" type="number" />
+      <input id="zoom-level" v-model.number="zoomLevel" type="number" min="1" />
     </div>
     <div>
       <label for="beat-selector">Beat:</label>
-      <input id="beat-selector" v-model.number="selectedBeat" type="number" />
+      <input id="beat-selector" v-model.number="selectedBeat" type="number" min="0" v-bind:max="selectedSSBeats-1" />
       <span>of {{selectedSSBeats}}</span>
     </div>
   </div>
@@ -41,7 +41,7 @@ export default class BottomMenu extends Vue {
   }
 
   get selectedSSBeats () {
-    return this.$store.state.selectedSS.beats
+    return this.$store.getters.getSelectedSS.beats
   }
 }
 </script>

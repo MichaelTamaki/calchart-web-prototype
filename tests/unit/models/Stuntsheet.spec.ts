@@ -30,11 +30,12 @@ describe('initializing Stuntsheet with previous Stuntsheet', () => {
   test('previous Stuntsheet has nextDot', () => {
     let x = 0
     let y = 0
-    prevSS.dots.forEach(function (dot) {
+    prevSS.dots.forEach(function (dot: Dot, index: number) {
       expect(dot.dotType).toBe(0)
       expect(dot.coord).toEqual([x, y])
       expect(dot.flow).toEqual([[x, y]])
-      expect(newSS.dots).toEqual(expect.arrayContaining([dot.nextDot]))
+      expect(dot.hasNextDot).toBe(true)
+      expect(newSS.dots[index].coord).toEqual(dot.coord)
       x += 2
     })
   })
@@ -46,11 +47,10 @@ describe('initializing Stuntsheet with previous Stuntsheet', () => {
     expect(newSS.dots).toHaveLength(10)
     let x = 0
     let y = 0
-    newSS.dots.forEach(function (dot) {
+    newSS.dots.forEach(function (dot: Dot) {
       expect(dot.dotType).toBe(0)
       expect(dot.coord).toEqual([x, y])
       expect(dot.flow).toEqual([[x, y]])
-      expect(dot.nextDot).toBeNull()
       x += 2
     })
   })
